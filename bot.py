@@ -69,7 +69,7 @@ async def on_reaction_add(reaction, user):
             if r.status_code == 200:
                 if r.json()["success"]:
                     embed = discord.Embed(title="Report van mop " + joke_id, description=reaction.message.embeds[0].description, color=0xff0000)
-                    embed.set_footer(text="Door: " + user.display_name)
+                    embed.set_footer(text="Door: " + user.name)
                     channel = client.get_channel(config.REPORT_CHANNEL)
                     await channel.send(embed=embed)
 
