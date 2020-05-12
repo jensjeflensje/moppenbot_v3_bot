@@ -42,6 +42,7 @@ async def on_message(message):
                 embed.set_footer(text="Van " + str(data["joke"]["author"]) + " | " + str(data["joke"]["likes"]) + " 👍")
                 msg = await message.channel.send(embed=embed)
                 await msg.add_reaction("👍")
+                await msg.add_reaction("🏴‍☠️")
                 return
         embed = discord.Embed(title="Error", description="Er is een error opgetreden. Meld dit.")
         await message.channel.send(embed=embed)
@@ -57,6 +58,20 @@ async def on_reaction_add(reaction, user):
                 "joke": int(reaction.message.embeds[0].title.replace("Mop ", "")),
             }
             requests.get("https://moppenbot.nl/api/like/", params=params)
+        if reaction.emoji == "🏴‍☠️":
+            joke_id = reaction.message.embeds[0].title.replace("Mop ", "")
+            params = {
+                "api_key": config.API_KEY,
+                "user": user.id,
+                "joke": int(joke_id),
+            }
+            r = requests.get("http://localhost:8000/api/report/", params=params)
+            if r.status_code == 200:
+                if r.json()["success"]:
+                    embed = discord.Embed(title="Report van mop " + joke_id, description=reaction.message.embeds[0].description, color=0xff0000)
+                    embed.set_footer(text="Door: " + user.displayname)
+                    channel = client.get_channel(config.REPORT_CHANNEL)
+                    await channel.send(embed=embed)
 
 client.loop.create_task(change_status())
 client.run(config.TOKEN)
