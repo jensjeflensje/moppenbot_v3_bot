@@ -65,7 +65,7 @@ async def on_reaction_add(reaction, user):
                 "user": user.id,
                 "joke": int(joke_id),
             }
-            r = requests.get("http://localhost:8000/api/report/", params=params)
+            r = requests.get("https://moppenbot.nl/api/report/", params=params)
             if r.status_code == 200:
                 if r.json()["success"]:
                     embed = discord.Embed(title="Report van mop " + joke_id, description=reaction.message.embeds[0].description, color=0xff0000)
