@@ -30,6 +30,18 @@ async def on_message(message):
             if args[1] == "nsfw":
                 params["nsfw"] = "true"
                 r = requests.get("https://moppenbot.nl/api/random/", params=params)
+            elif args[1] == "stats":
+                params["user"] = message.author.id
+                r = requests.get("https://moppenbot.nl/api/user/", params=params)
+                if r.status_code == 200:
+                    data = r.json()
+                    if data["success"]:
+                        description = f"{data['user']['jokes']} moppen en {data['user']['likes']} likes."
+                        embed = discord.Embed(title="Statistieken van " + message.author.name, description=description, color=0x00ff00)
+                        await message.channel.send(embed=embed)
+                        return
+                embed = discord.Embed(title="Error", description="Er is een error opgetreden. Ben je al wel eens ingelogd op de site?")
+                await message.channel.send(embed=embed)
             else:
                 params["q"] = args
                 r = requests.get("https://moppenbot.nl/api/search/", params=params)
